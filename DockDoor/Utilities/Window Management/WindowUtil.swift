@@ -626,6 +626,35 @@ extension WindowUtil {
             .first
     }
 
+    /// Keeps the frontmost app's focused window at the front of the switcher list while preserving
+    /// the existing relative order of every other entry.
+    static func prioritizeFrontmostWindowForSwitcher(_ windows: [WindowInfo]) -> [WindowInfo] {
+        guard windows.count >= 2,
+              let frontmostApp = NSWorkspace.shared.frontmostApplication
+        else {
+            return windows
+        }
+
+        let frontmostPID = frontmostApp.processIdentifier
+        let appElement = AXUIElementCreateApplication(frontmostPID)
+        let focusedWindow = (try? appElement.focusedWindow()) ?? nil
+        let focusedWindowID = focusedWindow.flatMap { try? $0.cgWindowId() }
+
+        let prioritizedIndex: Int? =
+            focusedWindowID.flatMap { focusedWindowID in
+                windows.firstIndex { $0.id == focusedWindowID }
+            } ?? windows.firstIndex { $0.app.processIdentifier == frontmostPID }
+
+        guard let prioritizedIndex, prioritizedIndex > 0 else {
+            return windows
+        }
+
+        var reorderedWindows = windows
+        let prioritizedWindow = reorderedWindows.remove(at: prioritizedIndex)
+        reorderedWindows.insert(prioritizedWindow, at: 0)
+        return reorderedWindows
+    }
+
     /// Returns whether a single window belongs to one of the given active Spaces.
     static func windowBelongsToActiveSpace(_ windowInfo: WindowInfo, activeSpaceIDs: Set<Int>) -> Bool {
         let windowSpaces = Set(windowInfo.id.cgsSpaces().map { Int($0) })

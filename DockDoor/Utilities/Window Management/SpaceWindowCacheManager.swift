@@ -9,8 +9,7 @@ class SpaceWindowCacheManager {
 
     private func notifyCoordinatorOfRemovedWindows(_ removedWindows: Set<WindowInfo>) {
         if !removedWindows.isEmpty {
-            DispatchQueue.main.async { [weak self] in
-                guard self != nil else { return }
+            DispatchQueue.main.async {
                 if let coordinator = SharedPreviewWindowCoordinator.activeInstance?.windowSwitcherCoordinator {
                     for removedWindow in removedWindows {
                         coordinator.removeWindow(byAx: removedWindow.axElement)
@@ -22,9 +21,10 @@ class SpaceWindowCacheManager {
 
     private func notifyCoordinatorOfAddedWindows(_ addedWindows: Set<WindowInfo>) {
         if !addedWindows.isEmpty {
-            DispatchQueue.main.async { [weak self] in
-                guard self != nil else { return }
-                if let coordinator = SharedPreviewWindowCoordinator.activeInstance?.windowSwitcherCoordinator {
+            DispatchQueue.main.async {
+                if let coordinator = SharedPreviewWindowCoordinator.activeInstance?.windowSwitcherCoordinator,
+                   !coordinator.isKeybindSessionActive
+                {
                     coordinator.addWindows(Array(addedWindows))
                 }
             }
@@ -33,9 +33,10 @@ class SpaceWindowCacheManager {
 
     private func notifyCoordinatorOfUpdatedWindows(_ updatedWindows: [WindowInfo]) {
         if !updatedWindows.isEmpty {
-            DispatchQueue.main.async { [weak self] in
-                guard self != nil else { return }
-                if let coordinator = SharedPreviewWindowCoordinator.activeInstance?.windowSwitcherCoordinator {
+            DispatchQueue.main.async {
+                if let coordinator = SharedPreviewWindowCoordinator.activeInstance?.windowSwitcherCoordinator,
+                   !coordinator.isKeybindSessionActive
+                {
                     for updatedWindow in updatedWindows {
                         if let index = coordinator.windows.firstIndex(where: { $0.id == updatedWindow.id }) {
                             coordinator.updateWindow(at: index, with: updatedWindow)
