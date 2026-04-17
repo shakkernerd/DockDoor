@@ -62,13 +62,22 @@ private class WindowSwitchingCoordinator {
     ) async {
         // Reset the immediate-select flag at start of initialization
         shouldSelectImmediately = false
+        let filterBySpace = (mode == .currentSpaceOnly || mode == .activeAppCurrentSpace)
+            || (mode == .allWindows && Defaults[.showWindowsFromCurrentSpaceOnlyInSwitcher])
+        let stageContextBundleIdentifier = filterBySpace ? currentStageContextBundleIdentifier() : nil
+        let stageResolution = filterBySpace
+            ? currentStageBundleResolution(contextBundleIdentifier: stageContextBundleIdentifier)
+            : StageBundleResolution(bundleIdentifiers: [], windowIDs: [])
+        let stageBundleIdentifiers = stageResolution.bundleIdentifiers
 
         var windows = WindowUtil.getAllWindowsOfAllApps()
 
-        let filterBySpace = (mode == .currentSpaceOnly || mode == .activeAppCurrentSpace)
-            || (mode == .allWindows && Defaults[.showWindowsFromCurrentSpaceOnlyInSwitcher])
         if filterBySpace {
-            windows = WindowUtil.filterWindowsByCurrentSpace(windows)
+            windows = WindowUtil.filterWindowsByCurrentSpace(
+                windows,
+                contextBundleIdentifier: stageContextBundleIdentifier,
+                stageResolution: stageResolution
+            )
         }
 
         if mode == .allWindows, Defaults[.showWindowsFromCurrentMonitorOnlyInSwitcher] {
@@ -83,6 +92,52 @@ private class WindowSwitchingCoordinator {
 
         if !Defaults[.includeHiddenWindowsInSwitcher] {
             windows = windows.filter { !$0.isHidden && !$0.isMinimized }
+        }
+
+        let missingStageBundleIdentifiers: Set<String>
+        if filterBySpace, !stageBundleIdentifiers.isEmpty {
+            let representedBundleIdentifiers = Set(windows.compactMap(\.app.bundleIdentifier))
+            missingStageBundleIdentifiers = stageBundleIdentifiers.subtracting(representedBundleIdentifiers)
+        } else {
+            missingStageBundleIdentifiers = []
+        }
+
+        if filterBySpace, !missingStageBundleIdentifiers.isEmpty {
+            // The cache can lag behind the windows currently visible in the active stage.
+            // Re-fetch any missing stage apps before applying the exact stage window-ID filter again.
+            let stageApps = NSWorkspace.shared.runningApplications.filter { app in
+                app.activationPolicy == .regular &&
+                    missingStageBundleIdentifiers.contains(app.bundleIdentifier ?? "") &&
+                    !WindowUtil.isAppFiltered(app)
+            }
+
+            for app in stageApps {
+                if let fetchedWindows = try? await WindowUtil.getActiveWindows(
+                    of: app,
+                    context: .dockPreview,
+                    ignoreSingleWindowFilter: true
+                ) {
+                    windows.append(contentsOf: fetchedWindows)
+                }
+            }
+
+            windows = WindowUtil.filterWindowsByCurrentSpace(
+                windows,
+                contextBundleIdentifier: stageContextBundleIdentifier,
+                stageResolution: stageResolution
+            )
+
+            if mode == .allWindows, Defaults[.showWindowsFromCurrentMonitorOnlyInSwitcher] {
+                windows = WindowUtil.filterWindowsByCurrentMonitor(windows)
+            }
+
+            if filterByApp {
+                windows = WindowUtil.getWindowsForFrontmostApp(from: windows)
+            }
+
+            if !Defaults[.includeHiddenWindowsInSwitcher] {
+                windows = windows.filter { !$0.isHidden && !$0.isMinimized }
+            }
         }
 
         windows = WindowUtil.sortWindowsForSwitcher(windows)

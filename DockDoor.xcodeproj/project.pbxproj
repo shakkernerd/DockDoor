@@ -96,6 +96,7 @@
 		BB2106762E834F25002F87D6 /* CmdTabFocusFullOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2106752E834F25002F87D6 /* CmdTabFocusFullOverlayView.swift */; };
 		BB2106782E834F46002F87D6 /* KeyHintRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2106772E834F46002F87D6 /* KeyHintRow.swift */; };
 		BB21067D2E83565A002F87D6 /* KeyboardLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB21067C2E83565A002F87D6 /* KeyboardLabel.swift */; };
+		C148FD5A2F12557A00B52A01 /* StageManagerWindowResolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = C148FD592F12557A00B52A01 /* StageManagerWindowResolution.swift */; };
 		BB22D7152DF9E24500EBBCA6 /* GlintPlaceholderModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB22D7142DF9E24500EBBCA6 /* GlintPlaceholderModifier.swift */; };
 		BB2567C62C10C5F000C0C93E /* DockUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2567C52C10C5F000C0C93E /* DockUtils.swift */; };
 		BB2884FF2E81AFCB0048A09B /* SettingsIllustratedToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2884FD2E81AFCB0048A09B /* SettingsIllustratedToggle.swift */; };
@@ -318,6 +319,7 @@
 		BB2106752E834F25002F87D6 /* CmdTabFocusFullOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CmdTabFocusFullOverlayView.swift; sourceTree = "<group>"; };
 		BB2106772E834F46002F87D6 /* KeyHintRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyHintRow.swift; sourceTree = "<group>"; };
 		BB21067C2E83565A002F87D6 /* KeyboardLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardLabel.swift; sourceTree = "<group>"; };
+		C148FD592F12557A00B52A01 /* StageManagerWindowResolution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StageManagerWindowResolution.swift; sourceTree = "<group>"; };
 		BB22D7142DF9E24500EBBCA6 /* GlintPlaceholderModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlintPlaceholderModifier.swift; sourceTree = "<group>"; };
 		BB2567C52C10C5F000C0C93E /* DockUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockUtils.swift; sourceTree = "<group>"; };
 		BB2884FD2E81AFCB0048A09B /* SettingsIllustratedToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsIllustratedToggle.swift; sourceTree = "<group>"; };
@@ -859,6 +861,7 @@
 			isa = PBXGroup;
 			children = (
 				341691A92EE37A6D004AFFC9 /* LiveWindowCapture.swift */,
+				C148FD592F12557A00B52A01 /* StageManagerWindowResolution.swift */,
 				BB2106732E830EC5002F87D6 /* WindowDiscoveryShared.swift */,
 				BB49747C2E81CE5100308326 /* WindowSeeder.swift */,
 				BB49747D2F01AB0100308326 /* WindowOrderPersistence.swift */,
@@ -1158,6 +1161,7 @@
 				BB638F062E02170B0010077D /* MediaProgressBar.swift in Sources */,
 				341691AA2EE37A6D004AFFC9 /* LiveWindowCapture.swift in Sources */,
 				BB15E1F72C8FC05A002ECFB9 /* UniformCardView.swift in Sources */,
+				C148FD5A2F12557A00B52A01 /* StageManagerWindowResolution.swift in Sources */,
 				BB2106742E830EC5002F87D6 /* WindowDiscoveryShared.swift in Sources */,
 				BB638F042E0217030010077D /* MediaControlButtonRow.swift in Sources */,
 				BB377C492DFD434300FA93DA /* GlobalPadding.swift in Sources */,

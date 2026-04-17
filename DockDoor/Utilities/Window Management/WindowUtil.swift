@@ -642,7 +642,19 @@ extension WindowUtil {
     }
 
     /// Filters windows to only include those in the current Space.
-    static func filterWindowsByCurrentSpace(_ windows: [WindowInfo]) -> [WindowInfo] {
+    static func filterWindowsByCurrentSpace(
+        _ windows: [WindowInfo],
+        contextBundleIdentifier: String? = nil,
+        stageResolution: StageBundleResolution? = nil
+    ) -> [WindowInfo] {
+        let resolvedStage = stageResolution ?? currentStageBundleResolution(
+            contextBundleIdentifier: contextBundleIdentifier
+        )
+        let stageWindowIDs = resolvedStage.windowIDs
+        if !stageWindowIDs.isEmpty {
+            return windows.filter { stageWindowIDs.contains($0.id) }
+        }
+
         let activeSpaceIDs = currentActiveSpaceIDs()
         return windows.filter { windowBelongsToActiveSpace($0, activeSpaceIDs: activeSpaceIDs) }
     }
