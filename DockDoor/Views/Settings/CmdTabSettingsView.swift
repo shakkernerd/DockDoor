@@ -95,7 +95,7 @@ struct CmdTabSettingsView: View {
         SettingsGroup(header: "Window Display") {
             VStack(alignment: .leading, spacing: 10) {
                 Toggle(isOn: $showWindowsFromCurrentSpaceOnlyInCmdTab) { Text("Show windows from current Space only") }
-                Text("Only display windows that are in the current virtual desktop/Space.")
+                Text("Only display windows that are in the current virtual desktop/Space. In Stage Manager, visible windows in the active stage are prioritized.")
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .padding(.leading, 20)
